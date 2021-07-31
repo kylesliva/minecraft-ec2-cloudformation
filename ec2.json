@@ -1,0 +1,92 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Stateless Minecraft server",
+    "Metadata":{
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {"default": "Resource parameters"},
+                    "Parameters": ["AMI, InstanceType", "MaxPrice"]
+                }
+            ]
+        }
+    },
+    "Parameters": {
+        "AMI": {
+            "Type": "String",
+            "Description": "AMZ-2 AMI to provision with",
+            "Default": "ami-0443305dabd4be2bc"
+        },
+        "InstanceType": {
+            "Type": "String",
+            "Description": "Desired instance type",
+            "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small"],
+            "Default": "t3a.nano"
+        },
+        "MaxPrice": {
+            "Type": "String",
+            "Description": "max price for spot instance",
+            "Default": ".02"
+        }
+    },
+    "Mappings": {
+        "keys": {
+            "laptop":  {"pub": "key"},
+            "desktop": {"pub": "key"}
+        }
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+        "MCEC2": {
+            "Type": "AWS::EC2::Instance",
+            "DependsOn": "MCEC2LT",
+            "Properties": {
+                "ImageId": {"Ref": "AMI"},
+                "InstanceType": {"Ref": "InstanceType"},
+                "KeyName": "minecraft-dev",
+                "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
+                "SecurityGroupIds": [{"Fn::ImportValue": "minecraft-core-sg"}],
+                "LaunchTemplate": {
+                    "LaunchTemplateId": {"Ref": "MCEC2LT"},
+                    "Version": "1"
+                },
+                "Tags": [
+                    {"Key": "minecraft-server", "Value": ""},
+                    {"Key": "Name", "Value": "minecraft-server"}
+                ]
+            }
+        },
+        "MCEC2LT": {
+            "Type" : "AWS::EC2::LaunchTemplate",
+            "Properties": {
+                "LaunchTemplateData": {
+                    "InstanceMarketOptions": {
+                        "MarketType": "spot",
+                        "SpotOptions": {
+                            "MaxPrice": {"Ref": "MaxPrice"},
+                            "InstanceInterruptionBehavior": "stop",
+                            "SpotInstanceType": "persistent"
+                        }
+                    }
+                }
+            }
+        },
+        "VOLA": {
+            "Type": "AWS::EC2::VolumeAttachment",
+            "DependsOn": "MCEC2",
+            "Properties": {
+                "Device": "/dev/sdf",
+                "InstanceId": {"Ref": "MCEC2"},
+                "VolumeId": {"Fn::ImportValue": 
+                    {"Fn::Sub": "minecraft-core-ebs-${AWS::Region}a"}
+                }
+            }
+        }
+
+    },
+    "Outputs": {
+
+    }
+}
