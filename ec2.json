@@ -7,6 +7,10 @@
                 {
                     "Label": {"default": "Resource parameters"},
                     "Parameters": ["AMI, InstanceType", "MaxPrice"]
+                },
+                {
+                    "Label": {"default": "App parameters"},
+                    "Parameters": ["MCJAR"]
                 }
             ]
         }
@@ -27,12 +31,16 @@
             "Type": "String",
             "Description": "max price for spot instance",
             "Default": ".02"
+        },
+        "MCJAR": {
+            "Type": "String",
+            "Description": "Link to desired Minecraft JAR"
         }
     },
     "Mappings": {
         "keys": {
-            "laptop":  {"pub": "key"},
-            "desktop": {"pub": "key"}
+            "laptop":  {"pub": ""},
+            "desktop": {"pub": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFByyklZOXKvzvI36jL7Rigw5KRr4vRylEfsnI00Lvij kscor@DESKTOP-ENDI9K3"}
         }
     },
     "Conditions": {

@@ -7,6 +7,7 @@
     * EBS
     * DNS stuff
     * ENIs?
+    * KMS key 
 3. EC2
     * should be stateless
 
@@ -22,9 +23,12 @@
 2. 
 3. EBS backup policy
 4. create KMS key in template
+5. PHZ
 
 # ec2
 1. mappings for SSH keys
 2. set up instance profile stuff
 3. set up cfn-init
 4. spigot
+5. monitoring
+6. add in SSH pub keys later
