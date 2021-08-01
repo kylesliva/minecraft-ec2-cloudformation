@@ -1,6 +1,13 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "static resources for MC server",
+    "Parameters": {
+        "VPCID": {
+            "Type": "String",
+            "Description": "VPC to deploy to",
+            "Default": "vpc-439af928"
+        }
+    },
     "Mappings": {
 
     },
@@ -26,6 +33,7 @@
             "Properties": {
                 "GroupDescription": "SG for Minecraft server",
                 "GroupName": "minecraft-sg",
+                "VpcId": {"Ref": "VPCID"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "0.0.0.0/0",
@@ -57,6 +65,7 @@
             "Properties": {
                 "GroupDescription": "allow SSH for remote management",
                 "GroupName": "mgmt-sg",
+                "VpcId": {"Ref": "VPCID"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "0.0.0.0/0",
@@ -81,6 +90,7 @@
             "Properties": {
                 "GroupDescription": "Open web ports to Internet",
                 "GroupName": "web-sg",
+                "VpcId": {"Ref": "VPCID"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "127.0.0.1/32",
@@ -111,6 +121,7 @@
             "Properties": {
                 "GroupDescription": "allow comms inside VPC",
                 "GroupName": "vpc-sg",
+                "VpcId": {"Ref": "VPCID"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "172.31.0.0/16",
@@ -140,6 +151,12 @@
             "Value": {"Ref": "MCAppSG"},
             "Export": {
                 "Name": {"Fn::Sub": "${AWS::StackName}-sg"}
+            }
+        },
+        "WEBSG": {
+            "Value": {"Ref": "WEBSG"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-web-sg"}
             }
         }
     }

@@ -25,7 +25,7 @@
             "Type": "String",
             "Description": "Desired instance type",
             "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small"],
-            "Default": "t3a.nano"
+            "Default": "t3a.medium"
         },
         "MaxPrice": {
             "Type": "String",
@@ -34,7 +34,8 @@
         },
         "MCJAR": {
             "Type": "String",
-            "Description": "Link to desired Minecraft JAR"
+            "Description": "Link to desired Minecraft JAR",
+            "Default": "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar"
         }
     },
     "Mappings": {
@@ -49,16 +50,62 @@
     "Resources": {
         "MCEC2": {
             "Type": "AWS::EC2::Instance",
+            "Metadata": {
+                "AWS::CloudFormation::Init": {
+                    "configSets": {"corecfg": ["core", "javasetup", "mcsetup", "appstart"]},
+                    "core": {
+                        "commands": {
+                            "01-mcdir": {"command": "mkdir /mnt/minecraft/"},
+                            "02-mountvol": {"command": "mount /dev/nvme1n1 /mnt/minecraft/"}
+                        }
+                    },
+                    "javasetup": {
+                        "commands": {
+                            "01-correttokey": {"command": "rpm --import https://yum.corretto.aws/corretto.key"},
+                            "02-addrepo": {"command": "curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo"},
+                            "03-installjava": {"command": "yum install -y java-16-amazon-corretto-devel"}
+                        }
+                    },
+                    "mcsetup": {
+                        "commands": {
+                            "01-pullmcjar": {"command": {
+                                "Fn::Join": ["",
+                                    [
+                                        "wget ",
+                                        {"Ref": "MCJAR"},
+                                        " -P /tmp/"
+                                    ]
+                            ]}}
+                        }
+                    },
+                    "appstart": {
+                        "commands": {
+                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx1024M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"}
+                        }
+                    }
+                }
+            },
             "DependsOn": "MCEC2LT",
             "Properties": {
                 "ImageId": {"Ref": "AMI"},
                 "InstanceType": {"Ref": "InstanceType"},
                 "KeyName": "minecraft-dev",
                 "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
-                "SecurityGroupIds": [{"Fn::ImportValue": "minecraft-core-sg"}],
+                "SecurityGroupIds": [{"Fn::ImportValue": "minecraft-core-sg"}, {"Fn::ImportValue": "minecraft-core-web-sg"}, "sg-0fc4a3e7d77269f02"],
                 "LaunchTemplate": {
                     "LaunchTemplateId": {"Ref": "MCEC2LT"},
                     "Version": "1"
+                },
+                "UserData" : { "Fn::Base64" :
+                    { "Fn::Join" : ["", [
+                       "#!/bin/bash -xe\n",
+                       "# Install the files and packages from the metadata\n",
+                       "/opt/aws/bin/cfn-init -v ",
+                       "         --stack ", { "Ref" : "AWS::StackName" },
+                       "         --resource MCEC2 ",
+                       "         --configsets corecfg ",
+                       "         --region ", { "Ref" : "AWS::Region" }, "\n"
+                    ]]}
                 },
                 "Tags": [
                     {"Key": "minecraft-server", "Value": ""},
