@@ -38,18 +38,10 @@
             "Default": "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar"
         }
     },
-    "Mappings": {
-        "keys": {
-            "laptop":  {"pub": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4vR/RVA8mOVCf6mjQ7LcncRyELOUCHTOwxuFr6cTWE mail@kylesliva.me"},
-            "desktop": {"pub": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFByyklZOXKvzvI36jL7Rigw5KRr4vRylEfsnI00Lvij kscor@DESKTOP-ENDI9K3"}
-        }
-    },
-    "Conditions": {
-
-    },
     "Resources": {
         "MCEC2": {
             "Type": "AWS::EC2::Instance",
+            "DependsOn": "MCEC2LT",
             "Metadata": {
                 "AWS::CloudFormation::Init": {
                     "configSets": {"corecfg": ["core", "javasetup", "mcsetup", "appstart"]},
@@ -80,18 +72,19 @@
                     },
                     "appstart": {
                         "commands": {
-                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx1024M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"}
+                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"}
                         }
                     }
                 }
             },
-            "DependsOn": "MCEC2LT",
             "Properties": {
                 "ImageId": {"Ref": "AMI"},
                 "InstanceType": {"Ref": "InstanceType"},
                 "KeyName": "minecraft-dev",
+                "SubnetId": {"Fn::ImportValue": 
+                    {"Fn::Sub": "minecraft-core-sbt"}
+                },
                 "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
-                "SecurityGroupIds": [{"Fn::ImportValue": "minecraft-core-sg"}, {"Fn::ImportValue": "minecraft-core-web-sg"}, "sg-0fc4a3e7d77269f02"],
                 "LaunchTemplate": {
                     "LaunchTemplateId": {"Ref": "MCEC2LT"},
                     "Version": "1"
@@ -125,6 +118,17 @@
                             "SpotInstanceType": "persistent"
                         }
                     }
+                }
+            }
+        },
+        "MCENIA": {
+            "Type": "AWS::EC2::NetworkInterfaceAttachment",
+            "Properties": {
+                "DeleteOnTermination": "true",
+                "DeviceIndex": "1",
+                "InstanceId": {"Ref": "MCEC2"},
+                "NetworkInterfaceId": {"Fn::ImportValue": 
+                    {"Fn::Sub": "minecraft-core-eni-${AWS::Region}a"}
                 }
             }
         },

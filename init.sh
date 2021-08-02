@@ -17,3 +17,7 @@ cd /mnt/minecraft/; java -Xms256M -Xmx1024M -XX:+UseG1GC -server -jar /tmp/serve
 # post-init commands
 # check cfn-init status
 tail -f /var/log/cfn-init.log
+
+
+# gotta run this to push tags to github
+git push --tags

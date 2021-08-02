@@ -5,7 +5,12 @@
         "VPCID": {
             "Type": "String",
             "Description": "VPC to deploy to",
-            "Default": "vpc-439af928"
+            "Default": "vpc-01de1a0f719d5ca22"
+        },
+        "PubSBT": {
+            "Type": "String",
+            "Description": "Public subnet to deploy Minecraft server to",
+            "Default": "subnet-0229326e822803245"
         }
     },
     "Mappings": {
@@ -26,6 +31,40 @@
                     {"Key": "minecraft-server", "Value": ""},
                     {"Key": "Name", "Value": "minecraft-ebs"}
                 ]
+            }
+        },
+        "MCENI": {
+            "Type": "AWS::EC2::NetworkInterface",
+            "DependsOn": ["MCAppSG", "MGMTSG", "WEBSG"],
+            "Properties": {
+                "Description": "Static ENI for Minecraft",
+                "SubnetId": {"Ref": "PubSBT"},
+                "SourceDestCheck": "true",
+                "GroupSet": [
+                    {"Ref": "MCAppSG"},
+                    {"Ref": "WEBSG"}                
+                ],
+                "Tags": [
+                    {"Key": "minecraft-server", "Value": ""},
+                    {"Key": "Name", "Value": "minecraft-eni"}
+                ]
+            }
+        },
+        "MCEIP": {
+            "Type": "AWS::EC2::EIP",
+            "Properties": {
+                "Tags": [
+                    {"Key": "minecraft-server", "Value": ""},
+                    {"Key": "Name", "Value": "minecraft-eip"}
+                ]            
+            }
+        },
+        "MCEIPA": {
+            "Type": "AWS::EC2::EIPAssociation",
+            "DependsOn": ["MCEIP", "MCENI"],
+            "Properties": {
+                "AllocationId": {"Fn::GetAtt" : [ "MCEIP", "AllocationId" ]},
+                "NetworkInterfaceId": {"Ref": "MCENI"}
             }
         },
         "MCAppSG": {
@@ -147,16 +186,46 @@
                 "Name": {"Fn::Sub": "${AWS::StackName}-ebs-${AWS::Region}a"}
             }
         },
+        "MCENI": {
+            "Value": {"Ref": "MCENI"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-eni-${AWS::Region}a"}
+            }
+        },
+        "MCEIP": {
+            "Value": {"Ref": "MCEIP"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-eip-${AWS::Region}a"}
+            }
+        },
+        "MCSBT": {
+            "Value": {"Ref": "PubSBT"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-sbt"}
+            }
+        },
+        "MCEIPA": {
+            "Value": {"Ref": "MCEIPA"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-eipa-${AWS::Region}a"}
+            }
+        },
         "MCSG": {
             "Value": {"Ref": "MCAppSG"},
             "Export": {
-                "Name": {"Fn::Sub": "${AWS::StackName}-sg"}
+                "Name": {"Fn::Sub": "${AWS::StackName}-mc-sg"}
             }
         },
         "WEBSG": {
             "Value": {"Ref": "WEBSG"},
             "Export": {
                 "Name": {"Fn::Sub": "${AWS::StackName}-web-sg"}
+            }
+        },
+        "MGMTSG": {
+            "Value": {"Ref": "WEBSG"},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-mgmt-sg"}
             }
         }
     }

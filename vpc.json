@@ -1,0 +1,83 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Create a very simple VPC for my lab (two subnets)",
+    "Metadata":{
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {"default": "Resource parameters"},
+                    "Parameters": ["VpcCIDR", "SubnetCIDR"]
+                }
+            ]
+        }
+    },
+    "Parameters": {
+        "VpcCIDR": {
+            "Description": "Parent CIDR for VPC",
+            "Type": "String"
+        },
+        "SubnetCIDR": {
+            "Description": "CIDRs for both subnets separated by a comma",
+            "Type": "CommaDelimitedList"
+        }
+    },
+    "Resources": {
+        "MCVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": {"Ref": "VpcCIDR"},
+                "EnableDnsHostnames": "true",
+                "EnableDnsSupport": "true",
+                "Tags": [
+                    {"Key": "Name", "Value": "lab-vpc"}
+                ]
+            }
+        },
+        "MCSBTA": {
+            "Type": "AWS::EC2::Subnet",
+            "DependsOn": ["MCVPC"],
+            "Properties": {
+                "VpcId": {"Ref": "MCVPC"},
+                "AvailabilityZone":{"Fn::Sub": "${AWS::Region}a"},
+                "CidrBlock": {"Fn::Select": ["0", {"Ref": "SubnetCIDR"}]},
+                "MapPublicIpOnLaunch": "false",
+                "Tags": [
+                    {"Key": "Name", "Value": "lab-subnet-a"}
+                ]
+            }
+        },
+        "MCSBTB": {
+            "Type": "AWS::EC2::Subnet",
+            "DependsOn": ["MCVPC"],
+            "Properties": {
+                "VpcId": {"Ref": "MCVPC"},
+                "AvailabilityZone":{"Fn::Sub": "${AWS::Region}b"},
+                "CidrBlock": {"Fn::Select": ["1", {"Ref": "SubnetCIDR"}]},
+                "MapPublicIpOnLaunch": "false",
+                "Tags": [
+                    {"Key": "Name", "Value": "lab-subnet-b"}
+                ]
+            }
+        },
+        "MCIGW": {
+            "Type": "AWS::EC2::InternetGateway",
+            "DependsOn": ["MCVPC"],
+            "Properties": {
+                "Tags": [
+                    {"Key": "Name", "Value": "lab-igw"}
+                ]            
+            }
+        },
+        "MCIGWA": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "DependsOn": ["MCVPC", "MCIGW"],
+            "Properties": {
+                "InternetGatewayId": {"Ref": "MCIGW"},
+                "VpcId": {"Ref": "MCVPC"}
+              }
+          }
+    },
+    "Outputs": {
+
+    }
+}
