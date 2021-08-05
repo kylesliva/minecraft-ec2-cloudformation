@@ -37,6 +37,7 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state is stor
 1. set up instance profile stuff
 2. harden cfn-init
 3. add outputs
+4. figure out multiple ENI model
 
 
 ### post
@@ -48,11 +49,9 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state is stor
    1. https://stackoverflow.com/questions/16733633/how-to-run-script-on-aws-cloud-formation-startup-as-a-different-user
    2. sudo -u minecraft ... ?
 6. replace default VPC 
-   1. create static ENI to give us a static IP
-      1. done, but still in default VPC
-   2. diagram out network design
+   1. diagram out network design
       1. in progress
-   3. VPC created
+   2. VPC created
 7. figure out how to turn subnet-id into VPC-ID, tamping down on stuff needed for core cft
 8. start/stop lambda
    1. run appstart cmd on instance startup
@@ -64,5 +63,3 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state is stor
    7. weirdness with VPC / timeouts 
       1. turn VPC off and it works
 9. make core CFT able to make multiple servers
-10. Figure out single-AZ restriction AZ
-    1.  can't use fn::getatt on supplied subnet, which is tough
