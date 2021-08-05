@@ -59,6 +59,41 @@
                 ]
             }
         },
+        "MCRTB":{
+            "Type": "AWS::EC2::RouteTable",
+            "DependsOn": ["MCVPC", "MCIGW"],
+            "Properties": {
+                "VpcId": {"Ref": "MCVPC"},
+                "Tags": [
+                    {"Key": "Name", "Value": "minecraft-rtb"}
+                ]        
+            }
+        },
+        "MCRTBAssocA":{
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "DependsOn": ["MCRTB", "MCSBTA"],
+            "Properties": {
+                "RouteTableId": {"Ref": "MCRTB"},
+                "SubnetId": {"Ref": "MCSBTA"}
+            }
+        },
+        "MCRTBAssocB":{
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "DependsOn": ["MCRTB", "MCSBTB"],
+            "Properties": {
+                "RouteTableId": {"Ref": "MCRTB"},
+                "SubnetId": {"Ref": "MCSBTB"}
+            }
+        },
+        "MCWebRoute":{
+            "Type": "AWS::EC2::Route",
+            "DependsOn": ["MCVPC", "MCIGW", "MCRTB"],
+            "Properties": {
+                "RouteTableId": {"Ref": "MCRTB"},
+                "GatewayId": {"Ref": "MCIGW"},
+                "DestinationCidrBlock": "0.0.0.0/0"
+            }
+        },
         "MCIGW": {
             "Type": "AWS::EC2::InternetGateway",
             "DependsOn": ["MCVPC"],

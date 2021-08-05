@@ -81,9 +81,18 @@
                 "ImageId": {"Ref": "AMI"},
                 "InstanceType": {"Ref": "InstanceType"},
                 "KeyName": "minecraft-dev",
-                "SubnetId": {"Fn::ImportValue": 
-                    {"Fn::Sub": "minecraft-core-sbt"}
-                },
+                "NetworkInterfaces": [ {
+                    "AssociatePublicIpAddress": "true",
+                    "DeviceIndex": "0",
+                    "GroupSet": [{"Fn::ImportValue": 
+                        {"Fn::Sub": "minecraft-core-mgmt-sg"}
+                    },
+                    {"Fn::ImportValue": 
+                        {"Fn::Sub": "minecraft-core-web-sg"}
+                    }],
+                    "SubnetId":{"Fn::ImportValue": 
+                        {"Fn::Sub": "minecraft-core-sbt"}
+                    }}],
                 "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
                 "LaunchTemplate": {
                     "LaunchTemplateId": {"Ref": "MCEC2LT"},

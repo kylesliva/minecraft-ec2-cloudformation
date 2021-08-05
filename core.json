@@ -5,12 +5,12 @@
         "VPCID": {
             "Type": "String",
             "Description": "VPC to deploy to",
-            "Default": "vpc-01de1a0f719d5ca22"
+            "Default": "vpc-025099a1aaa330d8f"
         },
         "PubSBT": {
             "Type": "String",
             "Description": "Public subnet to deploy Minecraft server to",
-            "Default": "subnet-0229326e822803245"
+            "Default": "subnet-017e87694bec1f9c0"
         }
     },
     "Mappings": {
