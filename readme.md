@@ -43,6 +43,7 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state is stor
 ### post
 1. logging
 2. harden IAM roles
+   1. add on what we need
 3. spigot
 4. monitoring
 5. create app run user for mc
@@ -62,4 +63,26 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state is stor
    6. add dryrun
    7. weirdness with VPC / timeouts 
       1. turn VPC off and it works
-9. make core CFT able to make multiple servers
+9.  make core CFT able to make multiple servers
+10. set up SSM
+    1.  add IAM role and it works, no more SSH SG
+11. EBS snapshots
+12. start/stop script
+
+
+Next steps:
+1. test start/stop
+```
+{
+  "ec2-id": "i-0014e5fa657f8d541",
+  "action": "start"
+}
+```
+   * can't seem to do it with lambda, investigate more 
+
+2. set up snapshots
+   1. done, test
+   2. add to core CFT
+3. cfn-init tuning
+   1. rc.conf
+      1. done

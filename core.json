@@ -28,25 +28,8 @@
                 "Size": "8",
                 "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
                 "Tags": [
-                    {"Key": "minecraft-server", "Value": ""},
+                    {"Key": "minecraft-server", "Value": "true"},
                     {"Key": "Name", "Value": "minecraft-ebs"}
-                ]
-            }
-        },
-        "MCENI": {
-            "Type": "AWS::EC2::NetworkInterface",
-            "DependsOn": ["MCAppSG", "MGMTSG", "WEBSG"],
-            "Properties": {
-                "Description": "Static ENI for Minecraft",
-                "SubnetId": {"Ref": "PubSBT"},
-                "SourceDestCheck": "true",
-                "GroupSet": [
-                    {"Ref": "MCAppSG"},
-                    {"Ref": "WEBSG"}                
-                ],
-                "Tags": [
-                    {"Key": "minecraft-server", "Value": ""},
-                    {"Key": "Name", "Value": "minecraft-eni"}
                 ]
             }
         },
@@ -57,14 +40,6 @@
                     {"Key": "minecraft-server", "Value": ""},
                     {"Key": "Name", "Value": "minecraft-eip"}
                 ]            
-            }
-        },
-        "MCEIPA": {
-            "Type": "AWS::EC2::EIPAssociation",
-            "DependsOn": ["MCEIP", "MCENI"],
-            "Properties": {
-                "AllocationId": {"Fn::GetAtt" : [ "MCEIP", "AllocationId" ]},
-                "NetworkInterfaceId": {"Ref": "MCENI"}
             }
         },
         "MCAppSG": {
@@ -186,14 +161,8 @@
                 "Name": {"Fn::Sub": "${AWS::StackName}-ebs-${AWS::Region}a"}
             }
         },
-        "MCENI": {
-            "Value": {"Ref": "MCENI"},
-            "Export": {
-                "Name": {"Fn::Sub": "${AWS::StackName}-eni-${AWS::Region}a"}
-            }
-        },
         "MCEIP": {
-            "Value": {"Ref": "MCEIP"},
+            "Value": {"Fn::GetAtt" : [ "MCEIP", "AllocationId" ]},
             "Export": {
                 "Name": {"Fn::Sub": "${AWS::StackName}-eip-${AWS::Region}a"}
             }
@@ -202,12 +171,6 @@
             "Value": {"Ref": "PubSBT"},
             "Export": {
                 "Name": {"Fn::Sub": "${AWS::StackName}-sbt"}
-            }
-        },
-        "MCEIPA": {
-            "Value": {"Ref": "MCEIPA"},
-            "Export": {
-                "Name": {"Fn::Sub": "${AWS::StackName}-eipa-${AWS::Region}a"}
             }
         },
         "MCSG": {

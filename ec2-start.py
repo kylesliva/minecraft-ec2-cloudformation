@@ -5,7 +5,7 @@ import os
 import pprint as p
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 def input_validation(event):
     if not event.get('ec2-id'):
@@ -33,8 +33,7 @@ def start_instance(id, awssvc):
         action = awssvc['ec2'].start_instances(
             InstanceIds=[
                 id
-            ],
-            DryRun = False
+            ]
         )
     except ClientError as e:
         logger.info(f"Error starting instance {id}: {e}")
@@ -44,12 +43,12 @@ def start_instance(id, awssvc):
 
 def stop_instance(id, awssvc):
     action = None
+    logger.debug("stopping instance")
     try:
         action = awssvc['ec2'].stop_instances(
             InstanceIds=[
                 id
-            ],
-            DryRun = False
+            ]
         )
     except ClientError as e:
         logger.info(f"Error stopping instance {id}: {e}")
@@ -62,8 +61,7 @@ def restart_instance(id, awssvc):
         action = awssvc['ec2'].reboot_instances(
             InstanceIds=[
                 id
-            ],
-            DryRun = False
+            ]
         )
     except ClientError as e:
         logger.info(f"Error restarting instance {id}: {e}")
@@ -79,19 +77,22 @@ def lambda_handler(event, context):
     if input_validation(event):
         validated = True
 
+    action = None
     if validated:
         if event['action'] == "start":
-            start_instance(event['ec2-id'], awssvc)
+            action = start_instance(event['ec2-id'], awssvc)
         if event['action'] == "stop":
-            stop_instance(event['ec2-id'], awssvc)
+            logger.debug("stopping instance")
+            action = stop_instance(event['ec2-id'], awssvc)
         if event['action'] == "restart":
-            restart_instance(event['ec2-id'], awssvc)
+            action = restart_instance(event['ec2-id'], awssvc)
     
     return {
         'statusCode': 200,
         'validated': validated,
         'body': {
             'ec2-id': event.get('ec2-id'),
-            'action': event.get('action')
+            'action': event.get('action'),
+            'log': action
         }
     }

@@ -46,6 +46,20 @@
                 "AWS::CloudFormation::Init": {
                     "configSets": {"corecfg": ["core", "javasetup", "mcsetup", "appstart"]},
                     "core": {
+                        "files": {
+                            "/etc/rc.d/rc.local":{
+                                "content": {"Fn::Join": ["\n",
+                                    [
+                                        "#!/bin/bash",
+                                        "mount /dev/nvme1n1 /mnt/minecraft/",
+                                        "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"
+                                    ]
+                                ]},
+                                "mode": "00744",
+                                "owner": "root",
+                                "group": "root"
+                            }
+                        },
                         "commands": {
                             "01-mcdir": {"command": "mkdir /mnt/minecraft/"},
                             "02-mountvol": {"command": "mount /dev/nvme1n1 /mnt/minecraft/"}
@@ -81,15 +95,18 @@
                 "ImageId": {"Ref": "AMI"},
                 "InstanceType": {"Ref": "InstanceType"},
                 "KeyName": "minecraft-dev",
+                "IamInstanceProfile": "minecraft-ec2-role",
                 "NetworkInterfaces": [ {
                     "AssociatePublicIpAddress": "true",
                     "DeviceIndex": "0",
-                    "GroupSet": [{"Fn::ImportValue": 
-                        {"Fn::Sub": "minecraft-core-mgmt-sg"}
-                    },
+                    "GroupSet": [
                     {"Fn::ImportValue": 
                         {"Fn::Sub": "minecraft-core-web-sg"}
-                    }],
+                    },
+                    {"Fn::ImportValue": 
+                        {"Fn::Sub": "minecraft-core-mc-sg"}
+                    }
+                    ],
                     "SubnetId":{"Fn::ImportValue": 
                         {"Fn::Sub": "minecraft-core-sbt"}
                     }}],
@@ -115,6 +132,16 @@
                 ]
             }
         },
+        "MCEIPA": {
+            "Type": "AWS::EC2::EIPAssociation",
+            "DependsOn": ["MCEC2"],
+            "Properties": {
+                "AllocationId": {"Fn::ImportValue": 
+                    {"Fn::Sub": "minecraft-core-eip-${AWS::Region}a"}
+                },
+                "InstanceId": {"Ref": "MCEC2"}
+            }
+        },
         "MCEC2LT": {
             "Type" : "AWS::EC2::LaunchTemplate",
             "Properties": {
@@ -127,17 +154,6 @@
                             "SpotInstanceType": "persistent"
                         }
                     }
-                }
-            }
-        },
-        "MCENIA": {
-            "Type": "AWS::EC2::NetworkInterfaceAttachment",
-            "Properties": {
-                "DeleteOnTermination": "true",
-                "DeviceIndex": "1",
-                "InstanceId": {"Ref": "MCEC2"},
-                "NetworkInterfaceId": {"Fn::ImportValue": 
-                    {"Fn::Sub": "minecraft-core-eni-${AWS::Region}a"}
                 }
             }
         },
