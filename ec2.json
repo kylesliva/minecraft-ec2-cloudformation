@@ -25,7 +25,7 @@
             "Type": "String",
             "Description": "Desired instance type",
             "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small", "c5a.large", "c5.large", "z1d.large"],
-            "Default": "t3a.medium"
+            "Default": "c5a.large"
         },
         "MaxPrice": {
             "Type": "String",
