@@ -52,7 +52,7 @@
                                     [
                                         "#!/bin/bash",
                                         "mount /dev/nvme1n1 /mnt/minecraft/",
-                                        "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"
+                                        "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /mnt/minecraft/server.jar nogui"
                                     ]
                                 ]},
                                 "mode": "00744",
@@ -79,14 +79,14 @@
                                     [
                                         "wget ",
                                         {"Ref": "MCJAR"},
-                                        " -P /tmp/"
+                                        " -P /mnt/minecraft/"
                                     ]
                             ]}}
                         }
                     },
                     "appstart": {
                         "commands": {
-                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /tmp/server.jar nogui"}
+                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /mnt/minecraft/server.jar nogui"}
                         }
                     }
                 }
