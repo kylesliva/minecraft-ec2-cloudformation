@@ -3,7 +3,7 @@
 ## Introduction
 This project creates a stateless Minecraft EC2 server in AWS. Game state and configuration is stored on an EBS to facilitate easier maintenance of the server. 
 
-## CFTs 
+## CloudFormation templates
 1. VPC (vpc.json)
    1. CIDR used: 10.0.1.0/24 (10.0.1.0/25, 10.0.1.128/25)
 2. Core Infrastructure (core.json)
