@@ -7,7 +7,7 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state and con
 1. VPC (vpc.json)
    1. CIDR used: 10.0.1.0/24 (10.0.1.0/25, 10.0.1.128/25)
 2. Core Infrastructure (core.json)
-   1. Must be named "minecraft-core" or imports in the next CFT will fail.
+   1. Must be named "minecraft-core" or imports in the EC2 CFT will fail.
    2. Static Elastic IP is created so you can set up DNS with it. This will incur extra costs, depending on the domain.
 3. EC2 (ec2.json)
    1. Server infrastructure. 
