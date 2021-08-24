@@ -1,4 +1,4 @@
-# Minecraft todo
+# Minecraft Server on AWS
 
 ## Introduction
 This project creates a stateless Minecraft EC2 server in AWS. Game state and configuration is stored on an EBS to facilitate easier maintenance of the server. 
