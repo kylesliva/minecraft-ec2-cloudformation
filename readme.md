@@ -18,7 +18,7 @@ This project creates a stateless Minecraft EC2 server in AWS. Game state and con
    1. Deploy core.json. Supply desired subnet and VPC for resources to be deployed. They must match the subnets for the EC2 instance.
    2. Deploy ec2.json in the same subnet+VPC as core.json. I prefer to name it minecraft-ec2. 
       1. AMI should be Amazon Linux 2.
-      2. c5a.large is a good instance type for my purposes.
+      2. c5a.large is a good instance type for my purposes. With the amount of time I play MC with my family+friends, it costs me around $9 a month.
       3. Max Spot price is set to the on-demand price for c5a.large. Customize to fit your needs.
       4. Supply link to the JAR you'd like to use.
 
