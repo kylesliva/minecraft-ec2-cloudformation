@@ -17,14 +17,11 @@
 2. Use S3 on core creation to push desired files to EBS (perhaps from snapshot)
 
 ### core
-1. snapshots?
-2. create KMS key in template
+1. create KMS key in template
 
 ### ec2
 1. set up instance profile stuff
-2. harden cfn-init
-3. add outputs
-4. figure out multiple ENI model
+   1. done
 
 
 ### post
@@ -36,6 +33,7 @@
 5. create app run user for mc
    1. https://stackoverflow.com/questions/16733633/how-to-run-script-on-aws-cloud-formation-startup-as-a-different-user
    2. sudo -u minecraft ... ?
+   3. perhaps just use rc.local for appstart, and do a reboot to start app
 6. replace default VPC 
    1. diagram out network design
       1. in progress
@@ -67,10 +65,14 @@ Next steps:
 ```
    * can't seem to do it with lambda, investigate more 
    * needs to be checked with AWS
+     * https://aws.amazon.com/premiumsupport/knowledge-center/ec2-launch-issue/
 
 2. set up snapshots
    1. done, test
    2. add to core CFT
+      1. is the default role ARN okay?
+      2. done
 3. cfn-init tuning
    1. rc.conf
       1. done
+4. add craftbukkit for mod capabilities

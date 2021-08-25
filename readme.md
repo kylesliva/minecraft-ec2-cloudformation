@@ -12,6 +12,9 @@ This project creates a reusable Minecraft EC2 server in AWS. Game state and conf
 3. EC2 (ec2.json)
    1. Server infrastructure. 
    2. Minecraft JAR file is saved to /usr/local/games so it persists as long as the instance is online.
+4. Start/Stop Lambda
+   1. Used to auto start/stop instance.
+   2. Working with AWS on why it won't start a spot instance from a stopped state. 
 
 
 ## Deployment
