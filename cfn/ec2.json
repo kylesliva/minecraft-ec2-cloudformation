@@ -1,6 +1,6 @@
 {
 "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Stateless Minecraft server. Remember to terminate the spot request on deletion",
+    "Description": "Minecraft server. Remember to terminate the spot request on deletion",
     "Metadata":{
         "AWS::CloudFormation::Interface": {
             "ParameterGroups": [

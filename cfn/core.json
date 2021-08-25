@@ -33,6 +33,46 @@
                 ]
             }
         },
+        "MCEBSLP": {
+            "Type": "AWS::DLM::LifecyclePolicy",
+            "DependsOn": "MCEBS",
+            "Properties": {
+                "Description": "Minecraft server EBS lifecycle policy",
+                "State": "ENABLED",
+                "ExecutionRoleArn": "arn:aws:iam::019828616938:role/service-role/AWSDataLifecycleManagerDefaultRole",
+                "PolicyDetails": {
+                    "ResourceLocations": ["CLOUD"],
+                    "ResourceTypes": ["VOLUME"],
+                    "Schedules": [{
+                        "Name": "Daily Snapshots",
+                        "TagsToAdd": [{
+                            "Key": "type",
+                            "Value": "DailySnapshot"
+                        }],
+                        "CreateRule": {
+                            "Interval": 24,
+                            "IntervalUnit": "HOURS",
+                            "Times": [
+                                "07:00"
+                            ]
+                        },
+                        "RetainRule": {
+                            "Count": 3
+                        },
+                        "CopyTags": "true"
+                   }],
+                    "TargetTags": [
+                        {
+                            "Key": "minecraft-server",
+                            "Value": "true"
+                        }
+                    ]
+                },
+                "Tags": [
+                    {"Key": "Name", "Value": "minecraft-ebs-lifecyclepolicy"}
+                ]
+            }
+        },
         "MCEIP": {
             "Type": "AWS::EC2::EIP",
             "Properties": {
