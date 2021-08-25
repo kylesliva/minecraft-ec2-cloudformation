@@ -19,14 +19,17 @@ This project creates a reusable Minecraft EC2 server in AWS. Game state and conf
 
 ## Deployment
    0. (This guide assumes you have a VPC set up. You can use any VPC for this, not just the one I have a CFT for.)
-   1. Deploy core.json. Supply desired subnet and VPC for resources to be deployed. They must match the subnets for the EC2 instance.
-   2. Deploy ec2.json in the same subnet+VPC as core.json. I prefer to name it minecraft-ec2. 
+   1. Deploy core.json. **MUST be named minecraft-core.** Supply desired subnet and VPC for resources to be deployed. They must match the subnets for the EC2 instance.
+   2. Make sure the EBS created by core.json is formatted before continuing. There are two ways to accomplish this:
+      *. Deploy ec2.json now, SSH / use Session Manager to get onto the instnace, and run `mkfs.ext4 /dev/nvme1n1`. After this is done, delete the ec2.json stack and continue normally.
+      *. Create a separate EC2 instance, attach the volume to it, and run `mkfs.ext4 /dev/nvme1n1`. 
+   3. Deploy ec2.json in the same subnet+VPC as core.json. I prefer to name it minecraft-ec2. 
       1. AMI should be Amazon Linux 2.
       2. c5a.large is a good instance type for my purposes. With the amount of time I play MC with my family+friends, it costs me around $9 a month.
       3. Max Spot price is set to the on-demand price for c5a.large. Customize to fit your needs.
       4. Supply link to the JAR you'd like to use.
 
-At this point, a server should come up. You will then need to customize Minecraft according to [these instructions](https://help.minecraft.net/hc/en-us/articles/360058525452-How-to-Setup-a-Minecraft-Java-Edition-Server). My preferred configuration is in the mc_cfg directory outside of the UUID allow list.
+At this point, a server should come up. You will then need to customize Minecraft according to [these instructions](https://help.minecraft.net/hc/en-us/articles/360058525452-How-to-Setup-a-Minecraft-Java-Edition-Server). My preferred configuration is in the cfg directory outside of the UUID allow list. Copy those to your /mnt/minecraft directory to customize your installation.
 
 
 ## Updating server
