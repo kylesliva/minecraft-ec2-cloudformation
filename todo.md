@@ -76,3 +76,4 @@ Next steps:
    1. rc.conf
       1. done
 4. add craftbukkit for mod capabilities
+   1. OR conditional for this: https://github.com/cpburnz/minecraft-prometheus-exporter
