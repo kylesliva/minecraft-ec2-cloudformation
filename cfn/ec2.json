@@ -6,7 +6,7 @@
                 "ParameterGroups": [
                     {
                         "Label": {"default": "Resource parameters"},
-                        "Parameters": ["AMI, InstanceType", "MaxPrice", "CoreStackName"]
+                        "Parameters": ["AMI, InstanceType", "MaxSpotPrice", "CoreStackName", "NameTag"]
                     },
                     {
                         "Label": {"default": "App parameters"},
@@ -27,9 +27,9 @@
                 "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small", "c5a.large", "c5.large", "z1d.large"],
                 "Default": "c5a.large"
             },
-            "MaxPrice": {
+            "MaxSpotPrice": {
                 "Type": "String",
-                "Description": "max price for spot instance",
+                "Description": "Maximum price for Spot instance. Leave blank to use On-Demand price (may incur massive costs!)",
                 "Default": ".02"
             },
             "CoreStackName": {
@@ -37,12 +37,20 @@
                 "Description": "Name of corresponding stack previously created (default is 'minecraft-core'). This will link shared resources.",
                 "Default": "minecraft-core"
             },
+            "NameTag": {
+                "Type": "String",
+                "Description": "Instance name tag for console management",
+                "Default": "minecraft-server" 
+            },
             "MCJAR": {
                 "Type": "String",
                 "Description": "Link to desired Minecraft JAR",
                 "Default": "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar"
             }
             
+        },
+        "Conditions": {
+            "SpotPriceProvided": {"Fn::Not": [{"Fn::Equals": {"Ref": "MaxSpotPrice"}}]}
         },
         "Resources": {
             "MCEC2": {
@@ -219,7 +227,7 @@
                         ]]}
                     },
                     "Tags": [
-                        {"Key": "minecraft-server", "Value": ""},
+                        {"Key": {"Ref": "NameTag"}, "Value": ""},
                         {"Key": "Name", "Value": "minecraft-server"}
                     ]
                 }
@@ -241,7 +249,7 @@
                         "InstanceMarketOptions": {
                             "MarketType": "spot",
                             "SpotOptions": {
-                                "MaxPrice": {"Ref": "MaxPrice"},
+                                "MaxPrice": {"Fn::If": ["SpotPriceProvided", {"Ref": "MaxSpotPrice"}, {"Ref": "AWS::NoValue"}]},
                                 "InstanceInterruptionBehavior": "stop",
                                 "SpotInstanceType": "persistent"
                             }
