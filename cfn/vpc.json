@@ -210,29 +210,6 @@
                 {"Key": "Name", "Value": "web-sg"}
             ]
             }
-        },
-        "VPCSG": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "allow comms inside VPC",
-                "GroupName": "vpc-sg",
-                "VpcId": {"Ref": "VPCID"},
-                "SecurityGroupIngress": [
-                    {
-                        "CidrIp": "172.31.0.0/16",
-                        "IpProtocol": "-1"
-                    }
-                ],
-                "SecurityGroupEgress": [
-                    {
-                        "CidrIp": "172.31.0.0/16",
-                        "IpProtocol": "-1"
-                    }
-                ],
-            "Tags": [
-                {"Key": "Name", "Value": "minecraft-sg"}
-            ]
-            }
         }
     },
     "Outputs": {
