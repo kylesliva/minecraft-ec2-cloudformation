@@ -76,7 +76,7 @@
                                         [
                                             "#!/bin/bash",
                                             "mount /dev/nvme1n1 /mnt/minecraft/",
-                                            "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"
+                                            "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/*.jar nogui"
                                         ]
                                     ]},
                                     "mode": "00744",
@@ -196,7 +196,7 @@
                         },
                         "appstart": {
                             "commands": {
-                                "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"}
+                                "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/*.jar nogui"}
                             }
                         }
                     }
@@ -205,7 +205,6 @@
                     "ImageId": {"Ref": "AMI"},
                     "InstanceType": {"Ref": "InstanceType"},
                     "KeyName": {"Ref": "KeyPairName"},
-                    "IamInstanceProfile": "minecraft-ec2-role",
                     "NetworkInterfaces": [ {
                         "AssociatePublicIpAddress": "true",
                         "DeviceIndex": "0",

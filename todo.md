@@ -9,13 +9,9 @@
    1. Add instance profile to CFN
    2. figure out what I need to create roles in CFN
 3. Create app run user
-4. create EC2 keypair in core.json
-5. document blkid trickery greatly simplifying EBS business :D 
+4. document blkid trickery greatly simplifying EBS business :D 
    1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
-6. set up auto-spot pricing conditional
-   1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
-8. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
-9. Put in warning about releasing Elastic IPs upon deletion of core.json
+5. Put in warning about releasing Elastic IPs upon deletion of core.json
    
 ## Things that got done
 1. set up snapshots
@@ -45,8 +41,11 @@
    2. done
 8. do server.properties changes in cfn-init
    1. done
-9. 7. Set up AZ selection in core.json
+9. Set up AZ selection in core.json
    1. done
+10. set up auto-spot pricing conditional
+   1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
+8. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
 
 
 ## Start/stop Lambda dummy request 
