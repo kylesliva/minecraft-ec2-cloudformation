@@ -1,19 +1,16 @@
 # TODO
 
 ## Things that need to get done
-1. test start/stop Lambda
-   * can't seem to do it with lambda, investigate more 
-   * needs to be checked with AWS
-     * https://aws.amazon.com/premiumsupport/knowledge-center/ec2-launch-issue/
-2. Add in conditionals for Spot price
-   1. see here https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
-3. Set up logging/monitoring (may require mods)
-4. Harden IAM roles
-5. Add instance profile to CFN
-6. Create app run user
-7. create EC2 keypair in core.json
-8. document blkid trickery greatly simplifying EBS business :D 
+1. Set up logging/monitoring (may require mods)
+2. Harden IAM roles
+   1. Add instance profile to CFN
+   2. figure out what I need to create roles in CFN
+3. Create app run user
+4. create EC2 keypair in core.json
+5. document blkid trickery greatly simplifying EBS business :D 
    1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
+6. set up auto-spot pricing conditional
+   1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
    
 ## Things that got done
 1. set up snapshots
