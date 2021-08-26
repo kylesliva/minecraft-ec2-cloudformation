@@ -15,6 +15,7 @@
 6. set up auto-spot pricing conditional
    1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
 8. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
+9. Put in warning about releasing Elastic IPs upon deletion of core.json
    
 ## Things that got done
 1. set up snapshots
@@ -25,7 +26,6 @@
 2. cfn-init tuning
    1. rc.conf
       1. done
-      2. 
 3. replace default VPC 
    1. diagram out network design
       1. in progress
