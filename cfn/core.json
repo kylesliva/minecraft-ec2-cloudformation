@@ -12,7 +12,7 @@
         },
         "AZ": {
             "Type": "String",
-            "Description": "",
+            "Description": "Availability Zone for Minecraft server. Must match the AZ of the subnet to be deployed to.",
             "AllowedValues": ["a", "b", "c", "d", "e", "f"]
         }
     },

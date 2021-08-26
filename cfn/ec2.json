@@ -6,7 +6,7 @@
                 "ParameterGroups": [
                     {
                         "Label": {"default": "Resource parameters"},
-                        "Parameters": ["AMI, InstanceType", "MaxSpotPrice", "CoreStackName", "NameTag"]
+                        "Parameters": ["AMI, InstanceType", "MaxSpotPrice", "CoreStackName", "NameTag", "KeyPairName"]
                     },
                     {
                         "Label": {"default": "App parameters"},
@@ -42,6 +42,11 @@
                 "Description": "Instance name tag for console management",
                 "Default": "minecraft-server" 
             },
+            "KeyPairName": {
+                "Type": "String",
+                "Description": "Name of key pair for EC2 access.",
+                "Default": "minecraft-dev" 
+            },
             "MCJAR": {
                 "Type": "String",
                 "Description": "Link to desired Minecraft JAR",
@@ -50,7 +55,7 @@
             
         },
         "Conditions": {
-            "SpotPriceProvided": {"Fn::Not": [{"Fn::Equals": {"Ref": "MaxSpotPrice"}}]}
+            "SpotPriceProvided": {"Fn::Not": [{"Fn::Equals": [{"Ref": "MaxSpotPrice"}, ""]}]}
         },
         "Resources": {
             "MCEC2": {
@@ -194,7 +199,7 @@
                 "Properties": {
                     "ImageId": {"Ref": "AMI"},
                     "InstanceType": {"Ref": "InstanceType"},
-                    "KeyName": "minecraft-dev",
+                    "KeyName": {"Ref": "KeyPairName"},
                     "IamInstanceProfile": "minecraft-ec2-role",
                     "NetworkInterfaces": [ {
                         "AssociatePublicIpAddress": "true",
