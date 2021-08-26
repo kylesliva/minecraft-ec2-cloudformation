@@ -3,6 +3,9 @@
 ## Introduction
 This project creates a reusable, performant Minecraft EC2 server in AWS. Game state and configuration is stored on an EBS to facilitate easier maintenance of the server.
 
+### Important notes
+1. Familiarize yourself with AWS pricing to prevent any unwanted surprises. [calculator.aws](https://calculator.aws) is a great resource in that regard.
+
 ## CloudFormation templates
 1. VPC (vpc.json)
    1. CIDR used: 10.0.1.0/24 (10.0.1.0/25, 10.0.1.128/25)
@@ -18,7 +21,7 @@ This project creates a reusable, performant Minecraft EC2 server in AWS. Game st
 
 
 ## Deployment
-   0. (This guide assumes you have a VPC set up. You can use any VPC for this, not just the one I have a CFT for.)
+   0. (This guide assumes you have a VPC set up. You can use any VPC for this, not just the one included.)
    1. Deploy core.json. Supply desired subnet and VPC for resources to be deployed. They must match the subnets for the EC2 instance. "minecraft-core" is a good default if you are only deploying one server.
       1. Note the stack name you enter, it will be important in Step 2.
       2. Note the public Elastic IP that is created. You can find it in the Outputs section after creation.
