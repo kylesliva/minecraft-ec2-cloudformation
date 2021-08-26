@@ -2,22 +2,16 @@
 
 ## Things that need to get done
 1. test start/stop Lambda
-```
-{
-  "ec2-id": "i-0014e5fa657f8d541",
-  "action": "start"
-}
-```
    * can't seem to do it with lambda, investigate more 
    * needs to be checked with AWS
      * https://aws.amazon.com/premiumsupport/knowledge-center/ec2-launch-issue/
-1. Add in conditionals for Spot if a on-demand instance is desired
+2. Add in conditionals for Spot price
    1. see here https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
-2. Set up logging/monitoring (may require mods)
-3. Harden IAM roles
-4. Add instance profile to CFN
-5. Create app run user
-8. create EC2 keypair in core.json
+3. Set up logging/monitoring (may require mods)
+4. Harden IAM roles
+5. Add instance profile to CFN
+6. Create app run user
+7. create EC2 keypair in core.json
    
 ## Things that got done
 1. set up snapshots
@@ -48,3 +42,12 @@
    2. done
 8. do server.properties changes in cfn-init
    1. done
+
+
+## Start/stop Lambda dummy request 
+```
+{
+  "ec2-id": "i-0014e5fa657f8d541",
+  "action": "start"
+}
+```
