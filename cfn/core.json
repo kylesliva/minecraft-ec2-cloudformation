@@ -4,11 +4,11 @@
     "Parameters": {
         "VPCID": {
             "Type": "String",
-            "Description": "VPC to deploy to",
+            "Description": "VPC to deploy to"
         },
         "PubSBT": {
             "Type": "String",
-            "Description": "Public subnet to deploy Minecraft server to",
+            "Description": "Public subnet to deploy Minecraft server to"
         }
     },
     "Mappings": {
