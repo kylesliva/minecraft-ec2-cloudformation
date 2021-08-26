@@ -9,6 +9,11 @@
         "PubSBT": {
             "Type": "String",
             "Description": "Public subnet to deploy Minecraft server to"
+        },
+        "AZ": {
+            "Type": "String",
+            "Description": "",
+            "AllowedValues": ["a", "b", "c", "d", "e", "f"]
         }
     },
     "Mappings": {
@@ -122,7 +127,7 @@
                 "Encrypted": "true",
                 "KmsKeyId": "alias/minecraft-kms2",
                 "Size": "8",
-                "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
+                "AvailabilityZone": {"Fn::Sub": ["${AWS::Region}${az}", {"az": {"Ref": "AZ"}}]},
                 "Tags": [
                     {"Key": "minecraft-server", "Value": "true"},
                     {"Key": "Name", "Value": "minecraft-ebs"}
@@ -328,6 +333,12 @@
             "Value": {"Ref": "WEBSG"},
             "Export": {
                 "Name": {"Fn::Sub": "${AWS::StackName}-mgmt-sg"}
+            }
+        },
+        "MCAZ": {
+            "Value": {"Fn::Sub": ["${AWS::Region}${az}", {"az": {"Ref": "AZ"}}]},
+            "Export": {
+                "Name": {"Fn::Sub": "${AWS::StackName}-az"}
             }
         }
     }

@@ -210,7 +210,9 @@
                         "SubnetId":{"Fn::ImportValue": 
                             {"Fn::Sub": ["${CoreStackName}-sbt", {"CoreStackName": {"Ref": "CoreStackName"}}]}
                         }}],
-                    "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
+                    "AvailabilityZone": {"Fn::ImportValue": 
+                        {"Fn::Sub": ["${CoreStackName}-az", {"CoreStackName": {"Ref": "CoreStackName"}}]}
+                    },
                     "LaunchTemplate": {
                         "LaunchTemplateId": {"Ref": "MCEC2LT"},
                         "Version": "1"
