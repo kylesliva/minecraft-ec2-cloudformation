@@ -1,5 +1,8 @@
 # TODO
 
+## TODO TODO
+* [switch to this](https://github.com/todomd/todo.md)
+  
 ## Things that need to get done
 1. Set up logging/monitoring (may require mods)
 2. Harden IAM roles
@@ -11,6 +14,7 @@
    1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
 6. set up auto-spot pricing conditional
    1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
+8. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
    
 ## Things that got done
 1. set up snapshots
@@ -40,6 +44,8 @@
       1. done
    2. done
 8. do server.properties changes in cfn-init
+   1. done
+9. 7. Set up AZ selection in core.json
    1. done
 
 
