@@ -1,176 +1,195 @@
 {
-"AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Minecraft server. Remember to terminate the spot request on deletion",
-    "Metadata":{
-        "AWS::CloudFormation::Interface": {
-            "ParameterGroups": [
-                {
-                    "Label": {"default": "Resource parameters"},
-                    "Parameters": ["AMI, InstanceType", "MaxPrice"]
-                },
-                {
-                    "Label": {"default": "App parameters"},
-                    "Parameters": ["MCJAR"]
-                }
-            ]
-        }
-    },
-    "Parameters": {
-        "AMI": {
-            "Type": "String",
-            "Description": "AMZ-2 AMI to provision with",
-            "Default": "ami-0443305dabd4be2bc"
+    "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "Minecraft server. Remember to terminate the spot request right after stack deletion, or it will fail.",
+        "Metadata":{
+            "AWS::CloudFormation::Interface": {
+                "ParameterGroups": [
+                    {
+                        "Label": {"default": "Resource parameters"},
+                        "Parameters": ["AMI, InstanceType", "MaxPrice", "CoreStackName"]
+                    },
+                    {
+                        "Label": {"default": "App parameters"},
+                        "Parameters": ["MCJAR"]
+                    }
+                ]
+            }
         },
-        "InstanceType": {
-            "Type": "String",
-            "Description": "Desired instance type",
-            "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small", "c5a.large", "c5.large", "z1d.large"],
-            "Default": "c5a.large"
+        "Parameters": {
+            "AMI": {
+                "Type": "String",
+                "Description": "AMZ-2 AMI to provision with",
+                "Default": "ami-0443305dabd4be2bc"
+            },
+            "InstanceType": {
+                "Type": "String",
+                "Description": "Desired instance type",
+                "AllowedValues": ["t3a.small", "t3a.nano", "t3a.medium", "m5a.small", "c5a.large", "c5.large", "z1d.large"],
+                "Default": "c5a.large"
+            },
+            "MaxPrice": {
+                "Type": "String",
+                "Description": "max price for spot instance",
+                "Default": ".02"
+            },
+            "CoreStackName": {
+                "Type": "String",
+                "Description": "Name of corresponding stack previously created (default is 'minecraft-core')",
+                "Default": "minecraft-core"
+            },
+            "MCJAR": {
+                "Type": "String",
+                "Description": "Link to desired Minecraft JAR",
+                "Default": "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar"
+            }
+            
         },
-        "MaxPrice": {
-            "Type": "String",
-            "Description": "max price for spot instance",
-            "Default": ".02"
-        },
-        "MCJAR": {
-            "Type": "String",
-            "Description": "Link to desired Minecraft JAR",
-            "Default": "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar"
-        }
-    },
-    "Resources": {
-        "MCEC2": {
-            "Type": "AWS::EC2::Instance",
-            "DependsOn": "MCEC2LT",
-            "Metadata": {
-                "AWS::CloudFormation::Init": {
-                    "configSets": {"corecfg": ["core", "javasetup", "mcsetup", "appstart"]},
-                    "core": {
-                        "files": {
-                            "/etc/rc.d/rc.local":{
-                                "content": {"Fn::Join": ["\n",
-                                    [
-                                        "#!/bin/bash",
-                                        "mount /dev/nvme1n1 /mnt/minecraft/",
-                                        "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"
-                                    ]
-                                ]},
-                                "mode": "00744",
-                                "owner": "root",
-                                "group": "root"
+        "Resources": {
+            "MCEC2": {
+                "Type": "AWS::EC2::Instance",
+                "DependsOn": "MCEC2LT",
+                "Metadata": {
+                    "AWS::CloudFormation::Init": {
+                        "configSets": {"corecfg": ["core", "javasetup", "mcsetup", "appstart"]},
+                        "core": {
+                            "files": {
+                                "/etc/rc.d/rc.local":{
+                                    "content": {"Fn::Join": ["\n",
+                                        [
+                                            "#!/bin/bash",
+                                            "mount /dev/nvme1n1 /mnt/minecraft/",
+                                            "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"
+                                        ]
+                                    ]},
+                                    "mode": "00744",
+                                    "owner": "root",
+                                    "group": "root"
+                                }
+                            },
+                            "commands": {
+                                "01-mcdir": {"command": "mkdir /mnt/minecraft/"},
+                                "02-ebsinit": {"command": "blkid --match-token TYPE=ext4 /dev/nvme1n1 || mkfs.ext4 -m0 /dev/nvme1n1"},
+                                "02-mountvol": {"command": "mount /dev/nvme1n1 /mnt/minecraft/"}
                             }
                         },
-                        "commands": {
-                            "01-mcdir": {"command": "mkdir /mnt/minecraft/"},
-                            "02-mountvol": {"command": "mount /dev/nvme1n1 /mnt/minecraft/"}
+                        "javasetup": {
+                            "commands": {
+                                "01-correttokey": {"command": "rpm --import https://yum.corretto.aws/corretto.key"},
+                                "02-addrepo": {"command": "curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo"},
+                                "03-installjava": {"command": "yum install -y java-16-amazon-corretto-devel"}
+                            }
+                        },
+                        "mcsetup": {
+                            "files": {
+                                "/mnt/minecraft/eula.txt":{
+                                    "content": {"Fn::Join": ["\n",
+                                        [
+                                            "eula=true"
+                                        ]
+                                    ]},
+                                    "mode": "00744",
+                                    "owner": "root",
+                                    "group": "root"
+                                }  
+                            },
+                            "commands": {
+                                "01-pullmcjar": {"command": {
+                                    "Fn::Join": ["",
+                                        [
+                                            "wget ",
+                                            {"Ref": "MCJAR"},
+                                            " -P /usr/local/games/"
+                                        ]
+                                ]}}
+                            }
+                        },
+                        "appstart": {
+                            "commands": {
+                                "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"}
+                            }
                         }
-                    },
-                    "javasetup": {
-                        "commands": {
-                            "01-correttokey": {"command": "rpm --import https://yum.corretto.aws/corretto.key"},
-                            "02-addrepo": {"command": "curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo"},
-                            "03-installjava": {"command": "yum install -y java-16-amazon-corretto-devel"}
+                    }
+                },
+                "Properties": {
+                    "ImageId": {"Ref": "AMI"},
+                    "InstanceType": {"Ref": "InstanceType"},
+                    "KeyName": "minecraft-dev",
+                    "IamInstanceProfile": "minecraft-ec2-role",
+                    "NetworkInterfaces": [ {
+                        "AssociatePublicIpAddress": "true",
+                        "DeviceIndex": "0",
+                        "GroupSet": [
+                        {"Fn::ImportValue": 
+                            {"Fn::Sub": ["${CoreStackName}-web-sg", {"CoreStackName": {"Ref": "CoreStackName"}}]}
+                        },
+                        {"Fn::ImportValue": 
+                            {"Fn::Sub": ["${CoreStackName}-mc-sg", {"CoreStackName": {"Ref": "CoreStackName"}}]}
                         }
+                        ],
+                        "SubnetId":{"Fn::ImportValue": 
+                            {"Fn::Sub": ["${CoreStackName}-sbt", {"CoreStackName": {"Ref": "CoreStackName"}}]}
+                        }}],
+                    "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
+                    "LaunchTemplate": {
+                        "LaunchTemplateId": {"Ref": "MCEC2LT"},
+                        "Version": "1"
                     },
-                    "mcsetup": {
-                        "commands": {
-                            "01-pullmcjar": {"command": {
-                                "Fn::Join": ["",
-                                    [
-                                        "wget ",
-                                        {"Ref": "MCJAR"},
-                                        " -P /usr/local/games/"
-                                    ]
-                            ]}}
-                        }
+                    "UserData" : { "Fn::Base64" :
+                        { "Fn::Join" : ["", [
+                           "#!/bin/bash -xe\n",
+                           "# Install the files and packages from the metadata\n",
+                           "/opt/aws/bin/cfn-init -v ",
+                           "         --stack ", { "Ref" : "AWS::StackName" },
+                           "         --resource MCEC2 ",
+                           "         --configsets corecfg ",
+                           "         --region ", { "Ref" : "AWS::Region" }, "\n"
+                        ]]}
                     },
-                    "appstart": {
-                        "commands": {
-                            "01-srvstart": {"command": "cd /mnt/minecraft/; java -Xms256M -Xmx3072M -XX:+UseG1GC -server -jar /usr/local/games/server.jar nogui"}
+                    "Tags": [
+                        {"Key": "minecraft-server", "Value": ""},
+                        {"Key": "Name", "Value": "minecraft-server"}
+                    ]
+                }
+            },
+            "MCEIPA": {
+                "Type": "AWS::EC2::EIPAssociation",
+                "DependsOn": ["MCEC2"],
+                "Properties": {
+                    "AllocationId": {"Fn::ImportValue": 
+                        {"Fn::Sub": ["${CoreStackName}-eip-${AWS::Region}a", {"CoreStackName": {"Ref": "CoreStackName"}}]}
+                    },
+                    "InstanceId": {"Ref": "MCEC2"}
+                }
+            },
+            "MCEC2LT": {
+                "Type" : "AWS::EC2::LaunchTemplate",
+                "Properties": {
+                    "LaunchTemplateData": {
+                        "InstanceMarketOptions": {
+                            "MarketType": "spot",
+                            "SpotOptions": {
+                                "MaxPrice": {"Ref": "MaxPrice"},
+                                "InstanceInterruptionBehavior": "stop",
+                                "SpotInstanceType": "persistent"
+                            }
                         }
                     }
                 }
             },
-            "Properties": {
-                "ImageId": {"Ref": "AMI"},
-                "InstanceType": {"Ref": "InstanceType"},
-                "KeyName": "minecraft-dev",
-                "IamInstanceProfile": "minecraft-ec2-role",
-                "NetworkInterfaces": [ {
-                    "AssociatePublicIpAddress": "true",
-                    "DeviceIndex": "0",
-                    "GroupSet": [
-                    {"Fn::ImportValue": 
-                        {"Fn::Sub": "minecraft-core-web-sg"}
-                    },
-                    {"Fn::ImportValue": 
-                        {"Fn::Sub": "minecraft-core-mc-sg"}
-                    }
-                    ],
-                    "SubnetId":{"Fn::ImportValue": 
-                        {"Fn::Sub": "minecraft-core-sbt"}
-                    }}],
-                "AvailabilityZone": {"Fn::Sub": "${AWS::Region}a"},
-                "LaunchTemplate": {
-                    "LaunchTemplateId": {"Ref": "MCEC2LT"},
-                    "Version": "1"
-                },
-                "UserData" : { "Fn::Base64" :
-                    { "Fn::Join" : ["", [
-                       "#!/bin/bash -xe\n",
-                       "# Install the files and packages from the metadata\n",
-                       "/opt/aws/bin/cfn-init -v ",
-                       "         --stack ", { "Ref" : "AWS::StackName" },
-                       "         --resource MCEC2 ",
-                       "         --configsets corecfg ",
-                       "         --region ", { "Ref" : "AWS::Region" }, "\n"
-                    ]]}
-                },
-                "Tags": [
-                    {"Key": "minecraft-server", "Value": ""},
-                    {"Key": "Name", "Value": "minecraft-server"}
-                ]
-            }
-        },
-        "MCEIPA": {
-            "Type": "AWS::EC2::EIPAssociation",
-            "DependsOn": ["MCEC2"],
-            "Properties": {
-                "AllocationId": {"Fn::ImportValue": 
-                    {"Fn::Sub": "minecraft-core-eip-${AWS::Region}a"}
-                },
-                "InstanceId": {"Ref": "MCEC2"}
-            }
-        },
-        "MCEC2LT": {
-            "Type" : "AWS::EC2::LaunchTemplate",
-            "Properties": {
-                "LaunchTemplateData": {
-                    "InstanceMarketOptions": {
-                        "MarketType": "spot",
-                        "SpotOptions": {
-                            "MaxPrice": {"Ref": "MaxPrice"},
-                            "InstanceInterruptionBehavior": "stop",
-                            "SpotInstanceType": "persistent"
-                        }
+            "VOLA": {
+                "Type": "AWS::EC2::VolumeAttachment",
+                "DependsOn": "MCEC2",
+                "Properties": {
+                    "Device": "/dev/sdf",
+                    "InstanceId": {"Ref": "MCEC2"},
+                    "VolumeId": {"Fn::ImportValue": 
+                        {"Fn::Sub": ["${CoreStackName}-ebs-${AWS::Region}a", {"CoreStackName": {"Ref": "CoreStackName"}}]}
                     }
                 }
             }
         },
-        "VOLA": {
-            "Type": "AWS::EC2::VolumeAttachment",
-            "DependsOn": "MCEC2",
-            "Properties": {
-                "Device": "/dev/sdf",
-                "InstanceId": {"Ref": "MCEC2"},
-                "VolumeId": {"Fn::ImportValue": 
-                    {"Fn::Sub": "minecraft-core-ebs-${AWS::Region}a"}
-                }
-            }
+        "Outputs": {
+    
         }
-
-    },
-    "Outputs": {
-
     }
-}
+    
