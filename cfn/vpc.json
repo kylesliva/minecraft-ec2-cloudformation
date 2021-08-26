@@ -116,7 +116,7 @@
             "Properties": {
                 "GroupDescription": "SG for Minecraft server",
                 "GroupName": "minecraft-sg",
-                "VpcId": {"Ref": "VPCID"},
+                "VpcId": {"Ref": "MCVPC"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "0.0.0.0/0",
@@ -160,7 +160,7 @@
             "Properties": {
                 "GroupDescription": "allow SSH for remote management",
                 "GroupName": "mgmt-sg",
-                "VpcId": {"Ref": "VPCID"},
+                "VpcId": {"Ref": "MCVPC"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "0.0.0.0/0",
@@ -185,7 +185,7 @@
             "Properties": {
                 "GroupDescription": "Open web ports to Internet",
                 "GroupName": "web-sg",
-                "VpcId": {"Ref": "VPCID"},
+                "VpcId": {"Ref": "MCVPC"},
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "127.0.0.1/32",
