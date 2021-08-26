@@ -12,6 +12,8 @@
 5. Add instance profile to CFN
 6. Create app run user
 7. create EC2 keypair in core.json
+8. document blkid trickery greatly simplifying EBS business :D 
+   1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
    
 ## Things that got done
 1. set up snapshots
