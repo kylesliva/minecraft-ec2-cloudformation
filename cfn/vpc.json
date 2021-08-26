@@ -129,6 +129,18 @@
                         "FromPort": "25565",
                         "ToPort": "25565",
                         "IpProtocol": "udp"
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "9225",
+                        "ToPort": "9225",
+                        "IpProtocol": "tcp"
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": "9225",
+                        "ToPort": "9225",
+                        "IpProtocol": "udp"
                     }
                 ],
                 "SecurityGroupEgress": [
