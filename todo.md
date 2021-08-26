@@ -1,5 +1,6 @@
-## TODO
+# TODO
 
+## Things that need to get done
 1. test start/stop Lambda
 ```
 {
@@ -16,16 +17,9 @@
 3. Harden IAM roles
 4. Add instance profile to CFN
 5. Create app run user
-6. for 2.0, test ability to make multiple servers
-   1. create KMS key in core template
-      1. done
-   2. done
-7. do server.properties changes in cfn-init
 8. create EC2 keypair in core.json
    
-
-
-Done:
+## Things that got done
 1. set up snapshots
    1. done, test
    2. add to core CFT
@@ -48,3 +42,9 @@ Done:
       1. 0/0 to igw-id
    3. done
 6. Use S3 on core creation to push desired files to EBS (perhaps from snapshot)
+7. for 2.0, test ability to make multiple servers
+   1. create KMS key in core template
+      1. done
+   2. done
+8. do server.properties changes in cfn-init
+   1. done
