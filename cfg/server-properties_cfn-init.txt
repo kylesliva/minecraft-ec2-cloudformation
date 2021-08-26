@@ -8,7 +8,7 @@
 "enable-query=false",
 "generator-settings=",
 "level-name=world",
-"motd=kscorps-lounge",
+"motd=minecraft-cfn",
 "query.port=25565",
 "pvp=false",
 "generate-structures=true",
