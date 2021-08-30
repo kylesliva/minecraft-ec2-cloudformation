@@ -13,7 +13,8 @@
 4. document blkid trickery greatly simplifying EBS business :D 
    1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
 5. Put in warning about releasing Elastic IPs upon deletion of core.json
-6. fix *.jar stuff, just rename pulled JAR to server.jar
+6. Clean up docs and add in references to best practices
+7. change modes on non-executables
    
 ## Things that got done
 1. set up snapshots
