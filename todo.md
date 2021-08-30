@@ -57,3 +57,11 @@
   "action": "start"
 }
 ```
+
+## Compiling Prometheus plugin
+```
+# clone this https://github.com/sladkoff/minecraft-prometheus-exporter
+# http://rdwl.xyz/blog/how-to-compile-spigot-plugins/
+sudo apt install default-jre default-jdk maven                         
+mvn clean package 
+```

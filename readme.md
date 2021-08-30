@@ -28,7 +28,7 @@ This project creates a reusable, performant Minecraft EC2 server in AWS. Game st
       1. AMI should be Amazon Linux 2.
       2. c5a.large is a good instance type for my purposes. With the amount of time I play MC with my family+friends, it costs me around $9 a month.
       3. Max Spot price is set to the on-demand price for c5a.large. Customize to fit your needs.
-      4. Supply link to the JAR you'd like to use. Works with Spigot, CraftBukkit, and vanilla.
+      4. Supply link to the JAR you'd like to use. Works with any of the commonly-used JARs. Tested with Spigot, Paper, and vanilla.
       5. CoreStackName should be the stack name you used in the previous step, while deploying core.json. 
    4. Verify that the server comes up. 
 
