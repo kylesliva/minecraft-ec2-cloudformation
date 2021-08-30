@@ -105,7 +105,7 @@
                                             "eula=true"
                                         ]
                                     ]},
-                                    "mode": "00744",
+                                    "mode": "00644",
                                     "owner": "root",
                                     "group": "root"
                                 },
@@ -167,7 +167,7 @@
                                             "max-world-size=29999984"                                        
                                         ]
                                     ]},
-                                    "mode": "00744",
+                                    "mode": "00644",
                                     "owner": "root",
                                     "group": "root"
                                 },
@@ -178,7 +178,7 @@
                                             "}"
                                         ]
                                     ]},
-                                    "mode": "00744",
+                                    "mode": "00644",
                                     "owner": "root",
                                     "group": "root"
                                 }   
