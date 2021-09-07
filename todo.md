@@ -6,10 +6,13 @@
 ## Things that need to get done
 1. Set up logging/monitoring (may require mods)
    1. Set up polling for https://github.com/sladkoff/minecraft-prometheus-exporter
+      1. avoiding due to security issues
+   2. looking at CloudWatch
 2. Harden IAM roles
    1. Add instance profile to CFN
    2. figure out what I need to create roles in CFN
 3. Create app run user
+   1. https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
 4. document blkid trickery greatly simplifying EBS business :D 
    1. https://serverfault.com/questions/975196/using-blkid-to-check-if-an-attached-ebs-volume-is-formatted
 5. Put in warning about releasing Elastic IPs upon deletion of core.json
