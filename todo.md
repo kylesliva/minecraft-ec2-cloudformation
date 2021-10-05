@@ -9,7 +9,7 @@
       1. avoiding due to security issues
    2. looking at CloudWatch
 2. Harden IAM roles
-   1. Add instance profile to CFN
+  
    2. figure out what I need to create roles in CFN
 3. Create app run user
    1. https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
@@ -18,40 +18,44 @@
 5. Put in warning about releasing Elastic IPs upon deletion of core.json
 6. Clean up docs and add in references to best practices
 7. change modes on non-executables
+8. https://github.com/YouHaveTrouble/minecraft-optimization
    
 ## Things that got done
+
 1. set up snapshots
    1. done, test
    2. add to core CFT
       1. is the default role ARN okay?
       2. done
-2. cfn-init tuning
+2. Add instance profile to CFN
+      1. done
+3. cfn-init tuning
    1. rc.conf
       1. done
-3. replace default VPC 
+4. replace default VPC 
    1. diagram out network design
       1. in progress
    2. VPC created
-4. set up SSM
+5. set up SSM
     1.  add IAM role and it works, no more SSH SG
     2.  add to CFN
-5.  Create custom route table with:
+6.  Create custom route table with:
    1. local route to VPC
    2. route to IGW
       1. 0/0 to igw-id
    3. done
-6. Use S3 on core creation to push desired files to EBS (perhaps from snapshot)
-7. for 2.0, test ability to make multiple servers
+7. Use S3 on core creation to push desired files to EBS (perhaps from snapshot)
+8. for 2.0, test ability to make multiple servers
    1. create KMS key in core template
       1. done
    2. done
-8. do server.properties changes in cfn-init
+9. do server.properties changes in cfn-init
    1. done
-9. Set up AZ selection in core.json
-   1. done
-10. set up auto-spot pricing conditional
-   1. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
-8. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
+10. Set up AZ selection in core.json
+   2. done
+11. set up auto-spot pricing conditional
+   3. https://github.com/vatertime/minecraft-spot-pricing/blob/master/cf.yml
+12. Swing SGs out to VPC CFT and rename so that multiple core+ec2 stacks can be deployed in one VPC
 
 
 ## Start/stop Lambda dummy request 

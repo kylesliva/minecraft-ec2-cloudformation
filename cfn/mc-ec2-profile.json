@@ -1,0 +1,63 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Minecraft EC2 instance profile",
+    "Resources": {
+        "MCEC2Profile": {
+            "Type" : "AWS::IAM::InstanceProfile",
+            "Properties" : {
+                "InstanceProfileName" : "minecraft-ec2-role",
+                "Roles" : [{"Ref": "MCEC2Role"}]
+              }
+        },
+        "MCEC2Role": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                   "Version" : "2012-10-17",
+                   "Statement": [{
+                      "Effect": "Allow",
+                      "Principal": {
+                         "Service": ["ec2.amazonaws.com"]
+                      },
+                      "Action": ["sts:AssumeRole"]
+                   }]
+                },
+            "RoleName": "minecraft-ec2-role"
+            }
+        },
+        "SSMPolicy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties":{
+                "Description": "Allow SSM for associated instance",
+                "PolicyDocument":{
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "ssm:UpdateInstanceInformation",
+                                "ssmmessages:CreateControlChannel",
+                                "ssmmessages:CreateDataChannel",
+                                "ssmmessages:OpenControlChannel",
+                                "ssmmessages:OpenDataChannel"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:GetEncryptionConfiguration"
+                            ],
+                            "Resource": "*"
+                        }
+                    ]
+                },
+                "Roles": [{"Ref": "MCEC2Role"}]
+            }
+        }
+
+    },
+    "Outputs": {
+
+    }
+}
