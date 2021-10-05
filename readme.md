@@ -19,8 +19,9 @@ This project creates a reusable, performant Minecraft EC2 server in AWS. Game st
 
 ## Deployment
    0. (This guide assumes you have a VPC set up. You can use any VPC for this, not just the one included.)
+      1. vpc.json includes required SGs for this stack. If you would prefer to use a pre-existing VPC, deploy optional-sgs.json and note its stack name for Step 3.
    1. Deploy core.json. Supply desired subnet and VPC for resources to be deployed. They must match the subnets for the EC2 instance. "minecraft-core" is a good default if you are only deploying one server.
-      1. Note the stack name you enter, it will be important in Step 2.
+      1. Note the stack name you enter, it will be important in Step 3.
       2. Note the public Elastic IP that is created. You can find it in the Outputs section after creation.
    2. Create an EC2 key pair and note its name. 
       1. [Info on this process here.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair)
@@ -30,6 +31,7 @@ This project creates a reusable, performant Minecraft EC2 server in AWS. Game st
       3. Max Spot price is set to the on-demand price for c5a.large. Customize to fit your needs.
       4. Supply link to the JAR you'd like to use. Works with any of the commonly-used JARs. Tested with Spigot, Paper, and vanilla.
       5. CoreStackName should be the stack name you used in the previous step, while deploying core.json. 
+      6. SGStackName should be the stack name you used for the SG stack, whether that's vpc.json or optional-sgs.json.
    4. Verify that the server comes up. 
 
 At this point, a server will come up at the Elastic IP created in core.json. You will then need to customize Minecraft according to [these instructions](https://help.minecraft.net/hc/en-us/articles/360058525452-How-to-Setup-a-Minecraft-Java-Edition-Server). My preferred configuration is in the cfg directory outside of the UUID allow list. Copy those to your /mnt/minecraft directory to customize your installation. 

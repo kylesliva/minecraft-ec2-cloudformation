@@ -9,8 +9,11 @@
       1. avoiding due to security issues
    2. looking at CloudWatch
 2. Harden IAM roles
-  
    2. figure out what I need to create roles in CFN
+   3. Create admin role
+      1. everything needed to manage the CFN setup
+   4. Create op role
+      1. start/stop, SSM perhaps
 3. Create app run user
    1. https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-init.html
 4. document blkid trickery greatly simplifying EBS business :D 
