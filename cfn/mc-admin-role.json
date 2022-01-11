@@ -1,0 +1,20 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Role for interactive management of Minecraft infrastructure",
+    "Metadata": {
+
+    },
+    "Resources": {
+        "MCAdminRole": {
+            "RoleName": "minecraft-admin",
+            "AssumeRolePolicyDocument":  {
+                "Statement": [{
+                    "Effect": "Allow"
+                }]
+            }
+        }
+    },
+    "Outputs": {
+
+    }
+}
