@@ -92,9 +92,7 @@
                         },
                         "javasetup": {
                             "commands": {
-                                "01-correttokey": {"command": "rpm --import https://yum.corretto.aws/corretto.key"},
-                                "02-addrepo": {"command": "curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo"},
-                                "03-installjava": {"command": "yum install -y java-16-amazon-corretto-devel"}
+                                "01-installjava": {"command": "sudo yum install java-17-amazon-corretto-headless"}
                             }
                         },
                         "mcsetup": {
