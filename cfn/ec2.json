@@ -92,7 +92,7 @@
                         },
                         "javasetup": {
                             "commands": {
-                                "01-installjava": {"command": "sudo yum install -y java-17-amazon-corretto-headless"}
+                                "01-installjava": {"command": "sudo yum install -y java-23-amazon-corretto-headless"}
                             }
                         },
                         "mcsetup": {
